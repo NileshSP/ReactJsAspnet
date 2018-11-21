@@ -47,7 +47,13 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         apiOptions += (this.state.topNumber !== null ? "&topNumber=" + this.state.topNumber.toString() : "");
         apiOptions += (this.state.currentOption.trim() !== "" ? "&columns=WebsiteId," + this.state.currentOption.trim() : "");
         fetch('api/Websites/Index' + apiOptions)
-            .then(response => response.json())
+            .then(response => {
+                this.setComponentState({
+                    loading: false
+                    , errorMessage: 'reading'
+                });
+                return response.json()
+            })
             .then(data => {
                 this.setComponentState({
                     websites: data as WebsiteDetails[]
@@ -93,7 +99,10 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 : (
                     this.state.errorMessage.trim() === ""
                         ? Websites.renderwebsitesTable(this.state.websites, this.state)
-                        : <p><em>Error caused : {this.state.errorMessage.trim()}</em><br/><em>Kindly retry..</em></p>
+                        : (this.state.errorMessage.trim() === "reading" 
+                            ? <p><em>Loading...data fetched...reading...</em></p>
+                            : <p><em>Error caused : {this.state.errorMessage.trim()}</em><br /><em>Kindly retry..</em></p>
+                          )
                   )
             );
 
@@ -148,10 +157,10 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
             </thead>
             <tbody>
             {   websites.map(website =>
-                    <tr key={ website.WebsiteId }>
-                        <td>{ website.Url }</td>
-                        <td>{ website.TotalVisits }</td>
-                        <td>{ website.VisitDate !== undefined  ? (new Date(website.VisitDate).toLocaleDateString()) : null }</td>
+                    <tr key={website.WebsiteId}>
+                        {!websites.every(s => s.Url === undefined)          && <td> {website.Url}   </td>}
+                        {!websites.every(s => s.TotalVisits === undefined)  && <td> {website.TotalVisits}   </td>}
+                        {!websites.every(s => s.VisitDate === undefined)    && <td> {website.VisitDate !== undefined ? (new Date(website.VisitDate).toLocaleDateString()) : null}   </td>}
                     </tr>
                 )
             }
