@@ -11,7 +11,7 @@ Pre-requisites:
 
 <br/>
 
-Clone the current git [repository](https://github.com/NileshSP/ReactJsAspnet.git) locally
+Clone the current [repository](https://github.com/NileshSP/ReactJsAspnet.git) locally
 
 <br/>
 

@@ -2,17 +2,6 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import 'isomorphic-fetch';
 
-interface WebsitesExampleState {
-    websites: WebsiteDetails[];
-    loading: boolean;
-    topNumber: number;
-    searchDate: string;
-    searchColumns: string;
-    currentOption: string;
-    responseJsonColumns: Array<string>;
-    errorMessage: string;
-}
-
 interface WebsiteDetails {
     WebsiteId: number;
     Url: string;
@@ -20,28 +9,41 @@ interface WebsiteDetails {
     VisitDate: string;
 }
 
+interface WebsitesExampleState {
+    websites: WebsiteDetails[];
+    loading: boolean;
+    topNumber: number;
+    searchDate: string;
+    listSearchColumns: Array<string>;
+    searchColumns: string;
+    currentOption: string;
+    responseJsonColumns: Array<string>;
+    errorMessage: string;
+}
 
 export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesExampleState> {
 
     constructor() {
         super();
+        let listColumns = ["Url,TotalVisits,VisitDate", "Url,TotalVisits"];
         this.state = {
             websites: []
             , loading: true
             , topNumber: 5
             , searchDate: "2018-11-01"
-            , searchColumns: this.listColumns[0]
-            , currentOption: this.listColumns[0]
+            , listSearchColumns: listColumns
+            , searchColumns: listColumns[0]
+            , currentOption: listColumns[0]
             , responseJsonColumns: []
             , errorMessage: ""
         };
     };
 
-    listColumns: Array<string> = ["Url,TotalVisits,VisitDate", "Url,TotalVisits"];
+    async componentDidMount() { this.getDataFromDBUsingServer(); }
 
-    async componentDidMount() { this.getData(); }
+    private setComponentState = (stateOptions: any) => this.setState({...this.state,...stateOptions });
 
-    getData() {
+    private getDataFromDBUsingServer = () => {
         let apiOptions = "?";
         apiOptions += (this.state.searchDate.trim() !== "" ? "&searchDate=" + this.state.searchDate.trim() : "");
         apiOptions += (this.state.topNumber !== null ? "&topNumber=" + this.state.topNumber.toString() : "");
@@ -72,33 +74,13 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
             });
     }
 
-    setComponentState(stateOptions: any) {
-        this.setState({...this.state,...stateOptions });
-    }
-
-    topNumberChange(event: { currentTarget: { value: string; }; }) {
-        var safeSearchTypeValue: string = event.currentTarget.value;
-        let newValue: number = parseInt(safeSearchTypeValue);
-        this.setComponentState({ topNumber: newValue });
-    }
-
-    dateChange(event: { currentTarget: { value: string; }; }) {
-        var safeSearchTypeValue: string = event.currentTarget.value;
-        this.setComponentState({ searchDate: safeSearchTypeValue });
-    }
-
-    columnsChange(event: { currentTarget: { value: string; }; }) {
-        var safeSearchTypeValue: string = event.currentTarget.value;
-        this.setComponentState({ currentOption : safeSearchTypeValue });
-    }
-
     public render() {
         let contents = (
             this.state.loading
                 ? <p><em>Loading...</em></p>
                 : (
                     this.state.errorMessage.trim() === ""
-                        ? Websites.renderwebsitesTable(this.state.websites, this.state)
+                        ? Websites.renderWebsitesTable(this.state.websites, this.state)
                         : (this.state.errorMessage.trim() === "reading" 
                             ? <p><em>Loading...data fetched...reading...</em></p>
                             : <p><em>Error caused : {this.state.errorMessage.trim()}</em><br /><em>Kindly retry..</em></p>
@@ -110,45 +92,19 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
             <h1>Website Tracking Details</h1>
             <p>This component demonstrates top websites by visits data from the server.</p>
             <p>Get top&nbsp;&nbsp;
-                <select id="topNumberSelect"
-                    value={this.state.topNumber.toString()}
-                    onChange={e => this.topNumberChange(e)}
-                    style={{ width:"45px"}}
-                >
-                    {
-                        [1,2,3,4,5,6,7,8,9,10].map((val) => {
-                            var setVal = val;
-                            return <option key={setVal} value={setVal} >{setVal}</option>
-                        })
-                    }
-                </select>
+                {Websites.renderTopNumber(this.state, (stateOptions: any) => this.setComponentState(stateOptions))}
                 &nbsp;&nbsp;websites for&nbsp;&nbsp;
-                <input type="date" id="searchDateSelect" min="2018-11-01" max="2018-11-10"
-                    value={this.state.searchDate}
-                    onChange={e => this.dateChange(e)}
-                />
+                {Websites.renderSearchDate(this.state, (stateOptions: any) => this.setComponentState(stateOptions))}
                 &nbsp;&nbsp;with columns as &nbsp;&nbsp;
-                <select id="columnsSelect"
-                    value={this.state.currentOption}
-                    onChange={e => this.columnsChange(e)}
-                    style={{ width: "200px" }}
-                    ref="columnsSelect"
-                >
-                    {
-                        this.listColumns.map((val) => {
-                            var setVal = val;
-                            return <option key={setVal} value={setVal} >{setVal}</option>
-                        })
-                    }
-                </select>
+                {Websites.renderColumnsList(this.state, (stateOptions: any) => this.setComponentState(stateOptions))}
                 &nbsp;&nbsp;
-                <button id="btnSubmit" onClick={e => this.getData()} >View</button>
+                {Websites.renderSubmitButton(() => this.getDataFromDBUsingServer())}
             </p>
             {contents}
         </div>;
     }
 
-    private static renderwebsitesTable(websites: WebsiteDetails[], state: Readonly<WebsitesExampleState>) {
+    private static renderWebsitesTable(websites: Readonly<WebsiteDetails[]>, state: Readonly<WebsitesExampleState>) {
         return <table className='table'>
             <thead>
                 <tr>
@@ -166,5 +122,53 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
             }
             </tbody>
         </table>;
+    }
+
+    private static renderTopNumber(state: Readonly<WebsitesExampleState>, setComponentState:(stateOptions: any) => void) {
+        const topNumberChange = (event: { currentTarget: { value: string; }; }) => setComponentState({ topNumber: parseInt(event.currentTarget.value) });
+        
+        return  <select id="topNumberSelect"
+            value={state.topNumber.toString()}
+            onChange={e => topNumberChange(e)}
+            style={{ width:"45px"}}
+        >
+            {
+                [1,2,3,4,5,6,7,8,9,10].map((val) => {
+                    var setVal = val;
+                    return <option key={setVal} value={setVal} >{setVal}</option>
+                })
+            }
+        </select>
+    }
+
+    private static renderSearchDate(state: Readonly<WebsitesExampleState>, setComponentState:(stateOptions: any) => void) {
+        const dateChange = (event: { currentTarget: { value: string; }; }) => setComponentState({ searchDate: event.currentTarget.value });
+    
+        return  <input type="date" id="searchDateSelect" min="2018-11-01" max="2018-11-10"
+            value={state.searchDate}
+            onChange={e => dateChange(e)}
+        />
+    }
+
+    private static renderColumnsList(state: Readonly<WebsitesExampleState>, setComponentState:(stateOptions: any) => void) {
+        const columnsChange = (event: { currentTarget: { value: string; }; }) => setComponentState({ currentOption : event.currentTarget.value });
+    
+        return <select id="columnsSelect"
+            value={state.currentOption}
+            onChange={e => columnsChange(e)}
+            style={{ width: "200px" }}
+            ref="columnsSelect"
+        >
+            {
+                state.listSearchColumns.map((val) => {
+                    var setVal = val;
+                    return <option key={setVal} value={setVal} >{setVal}</option>
+                })
+            }
+        </select>
+    }
+
+    private static renderSubmitButton(getData: () => void) {
+        return <button id="btnSubmit" onClick={e => getData()} >View</button>;
     }
 }
