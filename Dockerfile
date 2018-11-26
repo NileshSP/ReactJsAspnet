@@ -1,4 +1,4 @@
-#.net core process
+#.net core with sql file process
 FROM microsoft/dotnet:sdk AS builder
 WORKDIR /app
 
