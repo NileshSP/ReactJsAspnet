@@ -9,6 +9,7 @@ COPY ./ReactAspnet/*.csproj ./
 RUN dotnet restore ReactAspnet.csproj
 COPY ./ReactAspnet ./
 COPY ./ReactAspnet/App_Data/SampleDatabase.mdf.dbfile ./App_Data/SampleDatabase.mdf
+COPY ./ReactAspnet/App_Data/SampleDatabase_log.ldf.dbfile ./App_Data/SampleDatabase_log.ldf
 RUN dotnet build ReactAspnet.csproj -c Release --no-restore
 
 RUN dotnet publish ReactAspnet.csproj -c Release -o out --no-restore
