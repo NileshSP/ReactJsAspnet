@@ -1,27 +1,25 @@
-FROM microsoft/dotnet:sdk AS build-env
+#.net core process
+FROM microsoft/dotnet:sdk AS builder
 WORKDIR /app
-
-# Copy csproj and restore as distinct layers #*.csproj ./
-COPY ./*.sln ./
 COPY ./ReactAspnet/*.csproj ./
-#COPY ./ReactAspnetTests/*.csproj ./
 RUN dotnet restore ReactAspnet.csproj
-#RUN dotnet restore ReactAspnetTests.csproj
-
-# Copy everything else and build
-#COPY . ./
-COPY ./ReactAspnet ./ReactAspnet
-#COPY ./ReactAspnetTests ./ReactAspnetTests
+COPY ./ReactAspnet ./
 RUN dotnet build ReactAspnet.csproj -c Release --no-restore
 
-#RUN dotnet test ReactAspnetTests.csproj -c Release --no-build --no-restore
+#React process
+#FROM node:10.13.0-alpine as node
+#WORKDIR /app
+#COPY ./ReactAspnet/bin/release/netcoreapp2.1/publish/wwwroot ./wwwroot
+#COPY ./ReactAspnet/bin/release/netcoreapp2.1/publish/package*.json ./
+#RUN npm install --progress=true --loglevel=silent
+#RUN npm run build
 
-RUN dotnet publish ReactAspnet.csproj -c Release -o out
+RUN dotnet publish ReactAspnet.csproj -c Release -o out --no-restore
 
 # Build runtime image
 FROM microsoft/dotnet:aspnetcore-runtime
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=builder /app/out .
 CMD ASPNETCORE_URLS=http://*:$PORT dotnet ReactAspnet.dll
 #ENTRYPOINT ["dotnet", "ReactAspnet.dll"]
 
