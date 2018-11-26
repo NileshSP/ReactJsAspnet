@@ -4,7 +4,7 @@ WORKDIR /app
 # Copy csproj and restore as distinct layers #*.csproj ./
 COPY ./ReactAspnet/*.csproj ./
 COPY ./ReactAspnetTests/*.csproj ./
-RUN dotnet restore -s "./ReactAspnet.sln"
+RUN dotnet restore -s ./ReactAspnet.sln
 # RUN dotnet restore -s "./ReactAspnetTests/ReactAspnetTests.csproj"
 
 # Copy everything else and build
