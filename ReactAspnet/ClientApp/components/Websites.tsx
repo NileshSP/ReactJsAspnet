@@ -118,7 +118,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         return <table className='table'>
             <thead>
                 <tr>
-                    {state.responseJsonColumns?.map(s => (s.toUpperCase().trim() !== 'WEBSITEID' ? <th key={s}>{s}</th> : null)) }
+                    {state.responseJsonColumns.map(s => (s.toUpperCase().trim() !== 'WEBSITEID' ? <th key={s}>{s}</th> : null)) }
                 </tr>
             </thead>
             <tbody>
