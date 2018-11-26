@@ -59,12 +59,12 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 return response.json()
             })
             .then(data => {
-                console.log('data received as: ', data);
-                if(data.type === 'error') {
+                if(data.Message !== '') {
                     this.setComponentState({
                         loading: false
                         , errorMessage: data.Message
                     });    
+                    console.log('API data received as: ', data);
                 }
                 else {
                     this.setComponentState({
