@@ -68,7 +68,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
             .catch(err => {
                 this.setComponentState({
                     loading: false
-                    , errorMessage: err
+                    , errorMessage: err.Message
                 });
                 console.log(err)
             });
