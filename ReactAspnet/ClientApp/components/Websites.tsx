@@ -59,6 +59,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 return response.json()
             })
             .then(data => {
+                console.log('data received as: ', data);
                 if(data.type === 'error') {
                     this.setComponentState({
                         loading: false
