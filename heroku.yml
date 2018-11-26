@@ -1,5 +1,5 @@
 build:
   docker:
-    web: .\ReactAspnet\bin\Release\netcoreapp2.1\publish\Dockerfile
+    web: Dockerfile
 # run:
 #   web: bundle exec puma -C config/puma.rb

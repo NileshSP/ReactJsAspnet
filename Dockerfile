@@ -2,17 +2,17 @@ FROM microsoft/dotnet:sdk AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers #*.csproj ./
-COPY ../../../ReactAspnet/*.csproj ./
-COPY ../../../ReactAspnetTests/*.csproj ./
+COPY ./ReactAspnet/*.csproj ./
+COPY ./ReactAspnetTests/*.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
 #COPY . ./
-COPY ../../../ReactAspnet ../../../ReactAspnet
-COPY ../../../ReactAspnetTests ../../../ReactAspnetTests
+COPY ./ReactAspnet ./ReactAspnet
+COPY ./ReactAspnetTests ./ReactAspnetTests
 RUN dotnet build -c Release --no-restore
 
-RUN dotnet test "../../../ReactAspnetTests/ReactAspnetTests.csproj" -c Release --no-build --no-restore
+RUN dotnet test "./ReactAspnetTests/ReactAspnetTests.csproj" -c Release --no-build --no-restore
 
 RUN dotnet publish -c Release -o out
 
