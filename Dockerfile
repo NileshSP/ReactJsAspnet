@@ -12,9 +12,9 @@ RUN dotnet restore ReactAspnetTests.csproj
 #COPY . ./
 COPY ./ReactAspnet ./ReactAspnet
 COPY ./ReactAspnetTests ./ReactAspnetTests
-RUN dotnet build ReactAspnet.sln -c Release --no-restore
+RUN dotnet build ReactAspnet.csproj -c Release --no-restore
 
-RUN dotnet test ReactAspnetTests.csproj -c Release --no-build --no-restore
+#RUN dotnet test ReactAspnetTests.csproj -c Release --no-build --no-restore
 
 RUN dotnet publish ReactAspnet.csproj -c Release -o out
 
