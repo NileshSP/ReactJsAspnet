@@ -50,27 +50,37 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         apiOptions += (this.state.currentOption.trim() !== "" ? "&columns=WebsiteId," + this.state.currentOption.trim() : "");
         fetch('api/Websites/Index' + apiOptions)
             .then(response => {
-                this.setComponentState({
-                    loading: false
-                    , errorMessage: 'reading'
-                });
-                return response.json()
+                if(response.status === 200) {
+                    this.setComponentState({
+                        loading: false
+                        , errorMessage: 'reading'
+                    });
+                    return response.json()
+                }
             })
             .then(data => {
-                this.setComponentState({
-                    websites: data as WebsiteDetails[]
-                    , loading: false
-                    , searchColumns: this.state.currentOption.trim()
-                    , responseJsonColumns: data[0] !== undefined ? Object.keys(data[0]) : []
-                    , errorMessage: ""
-                });
+                if(data.type === 'error') {
+                    this.setComponentState({
+                        loading: false
+                        , errorMessage: data.Message
+                    });    
+                }
+                else {
+                    this.setComponentState({
+                        websites: data.Data === null ? [] : data as WebsiteDetails[]
+                        , loading: false
+                        , searchColumns: this.state.currentOption.trim()
+                        , responseJsonColumns: data.Data === null ? [] : Object.keys(data[0]) 
+                        , errorMessage: ""
+                    });
+                }
             })
             .catch((error) => {
-                this.setComponentState({
-                    loading: false
-                    , errorMessage: error.Message
-                });
-                console.log(error)
+                // this.setComponentState({
+                //     loading: false
+                //     , errorMessage: error.Message
+                // });
+                console.log('API call failed:',error)
             });
     }
 
@@ -108,7 +118,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         return <table className='table'>
             <thead>
                 <tr>
-                    {state.responseJsonColumns.map(s => (s.toUpperCase().trim() !== 'WEBSITEID' ? <th key={s}>{s}</th> : null)) }
+                    {state.responseJsonColumns?.map(s => (s.toUpperCase().trim() !== 'WEBSITEID' ? <th key={s}>{s}</th> : null)) }
                 </tr>
             </thead>
             <tbody>
