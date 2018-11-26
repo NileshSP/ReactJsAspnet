@@ -55,8 +55,8 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                         loading: false
                         , errorMessage: 'reading'
                     });
-                    return response.json()
                 }
+                return response.json()
             })
             .then(data => {
                 if(data.type === 'error') {
@@ -76,10 +76,6 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 }
             })
             .catch((error) => {
-                // this.setComponentState({
-                //     loading: false
-                //     , errorMessage: error.Message
-                // });
                 console.log('API call failed:',error)
             });
     }
