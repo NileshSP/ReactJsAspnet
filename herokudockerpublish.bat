@@ -25,4 +25,8 @@ call heroku container:release web -a %APP_NAME%
 ::heroku buildpacks -- check for registered buildpacks for the repository/project
 ::git subtree push --prefix ReactAspnet heroku master    OR    git push heroku master
 
-:: heroku buildpacks:add --index 1 heroku/nodejs
+::heroku build docker container at remote and publish app
+::add heroku.yml file in the root with required commands
+::commit git changes
+::heroku stack:set container
+:: git push -f heroku master
