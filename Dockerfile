@@ -2,6 +2,7 @@ FROM microsoft/dotnet:sdk AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers #*.csproj ./
+COPY ./*.sln ./
 COPY ./ReactAspnet/*.csproj ./
 COPY ./ReactAspnetTests/*.csproj ./
 RUN dotnet restore ReactAspnet.csproj
@@ -13,9 +14,9 @@ COPY ./ReactAspnet ./ReactAspnet
 COPY ./ReactAspnetTests ./ReactAspnetTests
 RUN dotnet build ReactAspnet.sln -c Release --no-restore
 
-RUN dotnet test "./ReactAspnetTests/ReactAspnetTests.csproj" -c Release --no-build --no-restore
+RUN dotnet test ReactAspnetTests.csproj -c Release --no-build --no-restore
 
-RUN dotnet publish ./ReactAspnet/ReactAspnet.csproj -c Release -o out
+RUN dotnet publish ReactAspnet.csproj -c Release -o out
 
 # Build runtime image
 FROM microsoft/dotnet:aspnetcore-runtime
