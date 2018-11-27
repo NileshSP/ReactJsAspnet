@@ -65,13 +65,15 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 }
             })
             .then(data => {
-                this.setComponentState({
-                    websites: data.length === 0 ? [] : data as WebsiteDetails[]
-                    , loading: false
-                    , searchColumns: this.state.currentOption.trim()
-                    , responseJsonColumns: data.length === 0 ? [] : Object.keys(data[0]) 
-                    , errorMessage: ""
-                });
+                if(this.state.errorMessage === 'reading') {
+                    this.setComponentState({
+                        websites: data.length === 0 ? [] : data as WebsiteDetails[]
+                        , loading: false
+                        , searchColumns: this.state.currentOption.trim()
+                        , responseJsonColumns: data.length === 0 ? [] : Object.keys(data[0]) 
+                        , errorMessage: ""
+                    });
+                }
             })
             .catch((error) => {
                 console.log('API call failed:',error)
