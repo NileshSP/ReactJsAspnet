@@ -57,7 +57,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 return response.json()
             })
             .then(data => {
-                if(data.Message !== '') {
+                if(data.length === null) {
                     this.setComponentState({
                         loading: false
                         , errorMessage: data.Message
@@ -66,10 +66,10 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 }
                 else {
                     this.setComponentState({
-                        websites: data.Data === null ? [] : data as WebsiteDetails[]
+                        websites: data.length === 0 ? [] : data as WebsiteDetails[]
                         , loading: false
                         , searchColumns: this.state.currentOption.trim()
-                        , responseJsonColumns: data.Data === null ? [] : Object.keys(data[0]) 
+                        , responseJsonColumns: data.length === 0 ? [] : Object.keys(data[0]) 
                         , errorMessage: ""
                     });
                 }
