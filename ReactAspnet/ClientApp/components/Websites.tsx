@@ -99,7 +99,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                     ? <p><em>Loading...</em></p>
                     : (
                         this.state.errorMessage === ""
-                            ? Websites.renderWebsitesTable(this.state.websites, this.state)
+                            ? Websites.renderWebsitesTable(this.state)
                             : (this.state.errorMessage === "reading" 
                                 ? <p><em>Loading...data fetched...reading...</em></p>
                                 : <p><em>Error occured : {this.state.errorMessage}</em></p>
@@ -109,7 +109,8 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         </div>;
     }
 
-    private static renderWebsitesTable(websites: Readonly<WebsiteDetails[]>, state: Readonly<WebsitesExampleState>) {
+    private static renderWebsitesTable(state: Readonly<WebsitesExampleState>) {
+        const websites = state.websites as WebsiteDetails[]
         return <table className='table'>
             <thead>
                 <tr>
