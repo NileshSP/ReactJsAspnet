@@ -2,6 +2,8 @@
 
 Project showcases React.js frontend UI built with Typescript to consume data from the sql database which communicates using .Net Core by exposing Web Api endpoints (for Json output) supplemented by entity framework scaffolded models from database(assuming database already existed)
 
+<br/>
+
 # Steps to get the project running
 
 Pre-requisites:
@@ -39,6 +41,8 @@ Once the project is build and run, a browser page would be presented with defaul
 3. Fetch data 
 4. Websites data <- `contains functionality related to data access from sql database`
 
+
+![alt text](https://github.com/NileshSP/ReactJsAspnet/blob/master/screenshot.gif "Working example..")
 <br/>
 
 # Root folder contents: 
