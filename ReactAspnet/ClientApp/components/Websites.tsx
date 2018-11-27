@@ -50,19 +50,14 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         apiOptions += (this.state.currentOption.trim() !== "" ? "&columns=WebsiteId," + this.state.currentOption.trim() : "");
         fetch('api/Websites/Index' + apiOptions)
             .then(response => {
+                let data = response.json();
                 if(response.status === 200) {
                     this.setComponentState({
                         loading: false
                         , errorMessage: 'reading'
                     });
-                    return response.json()
                 }
-                else {
-                    this.setComponentState({
-                        loading: false
-                        , errorMessage: (response.json()).then(s => s.Message)
-                    });
-                }
+                return data
             })
             .then(data => {
                 if(this.state.errorMessage === 'reading') {
@@ -73,6 +68,12 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                         , responseJsonColumns: data.length === 0 ? [] : Object.keys(data[0]) 
                         , errorMessage: ""
                     });
+                }
+                else{
+                    this.setComponentState({
+                        loading: false
+                        , errorMessage: data.Message
+                    });    
                 }
             })
             .catch((error) => {
