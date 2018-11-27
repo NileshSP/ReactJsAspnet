@@ -50,29 +50,28 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         apiOptions += (this.state.currentOption.trim() !== "" ? "&columns=WebsiteId," + this.state.currentOption.trim() : "");
         fetch('api/Websites/Index' + apiOptions)
             .then(response => {
-                this.setComponentState({
-                    loading: false
-                    , errorMessage: response.status === 200 ? 'reading' : 'issue occured'
-                });
-                return response.json()
-            })
-            .then(data => {
-                if(data.length === null) {
+                if(response.status === 200) {
                     this.setComponentState({
                         loading: false
-                        , errorMessage: data.Message
-                    });    
-                    console.log('API data received as: ', data);
+                        , errorMessage: 'reading'
+                    });
+                    return response.json()
                 }
                 else {
                     this.setComponentState({
-                        websites: data.length === 0 ? [] : data as WebsiteDetails[]
-                        , loading: false
-                        , searchColumns: this.state.currentOption.trim()
-                        , responseJsonColumns: data.length === 0 ? [] : Object.keys(data[0]) 
-                        , errorMessage: ""
+                        loading: false
+                        , errorMessage: (response.json()).then(s => s.Message)
                     });
                 }
+            })
+            .then(data => {
+                this.setComponentState({
+                    websites: data.length === 0 ? [] : data as WebsiteDetails[]
+                    , loading: false
+                    , searchColumns: this.state.currentOption.trim()
+                    , responseJsonColumns: data.length === 0 ? [] : Object.keys(data[0]) 
+                    , errorMessage: ""
+                });
             })
             .catch((error) => {
                 console.log('API call failed:',error)
