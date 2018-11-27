@@ -50,12 +50,10 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
         apiOptions += (this.state.currentOption.trim() !== "" ? "&columns=WebsiteId," + this.state.currentOption.trim() : "");
         fetch('api/Websites/Index' + apiOptions)
             .then(response => {
-                if(response.status === 200) {
-                    this.setComponentState({
-                        loading: false
-                        , errorMessage: 'reading'
-                    });
-                }
+                this.setComponentState({
+                    loading: false
+                    , errorMessage: response.status === 200 ? 'reading' : 'issue occured'
+                });
                 return response.json()
             })
             .then(data => {
