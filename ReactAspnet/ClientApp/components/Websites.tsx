@@ -82,19 +82,6 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
     }
 
     public render() {
-        let contents = (
-            this.state.loading
-                ? <p><em>Loading...</em></p>
-                : (
-                    this.state.errorMessage === ""
-                        ? Websites.renderWebsitesTable(this.state.websites, this.state)
-                        : (this.state.errorMessage === "reading" 
-                            ? <p><em>Loading...data fetched...reading...</em></p>
-                            : <p><em>Error occured : {this.state.errorMessage}</em></p>
-                          )
-                  )
-            );
-
         return <div>
             <h1>Website Tracking Details</h1>
             <p>This component demonstrates top websites by visits data from the server.</p>
@@ -107,7 +94,18 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                 &nbsp;&nbsp;
                 {Websites.renderSubmitButton(() => this.getDataFromDBUsingServer())}
             </p>
-            {contents}
+            {
+                this.state.loading
+                    ? <p><em>Loading...</em></p>
+                    : (
+                        this.state.errorMessage === ""
+                            ? Websites.renderWebsitesTable(this.state.websites, this.state)
+                            : (this.state.errorMessage === "reading" 
+                                ? <p><em>Loading...data fetched...reading...</em></p>
+                                : <p><em>Error occured : {this.state.errorMessage}</em></p>
+                            )
+                    )            
+            }
         </div>;
     }
 
