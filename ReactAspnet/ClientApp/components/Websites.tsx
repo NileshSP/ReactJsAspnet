@@ -88,7 +88,7 @@ export class Websites extends React.Component<RouteComponentProps<{}>, WebsitesE
                         ? Websites.renderWebsitesTable(this.state.websites, this.state)
                         : (this.state.errorMessage === "reading" 
                             ? <p><em>Loading...data fetched...reading...</em></p>
-                            : <p><em>Error caused : {this.state.errorMessage}</em><br /><em>Kindly retry..</em></p>
+                            : <p><em>Error caused : {this.state.errorMessage}</em></p>
                           )
                   )
             );
